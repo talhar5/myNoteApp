@@ -14,7 +14,7 @@
     <!-- navbar  -->
     <nav data-bs-theme="dark" class="navbar bg-dark navbar-expand-lg bg-body-tertiary">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#">Navbar</a>
+            <a class="navbar-brand" href="#">Samar Notes</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                 data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
                 aria-label="Toggle navigation">
@@ -39,10 +39,17 @@
         <div class="card">
             <div class="card-body">
                 <h5 class="card-title">Write a node</h5>
-                <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
-                <button class="btn my-2 btn-primary">Add Note</button>
+                <textarea class="form-control" id="addNoteText" rows="3"></textarea>
+                <button id="addBtn" class="btn my-2 btn-primary">Add Note</button>
             </div>
         </div>
+    </section>
+
+    <!-- saved notes section  -->
+    <section class="container">
+        <h1>Saved Notes:</h1>
+        <div id="notes" class="row"></div>
+
     </section>
 
 
