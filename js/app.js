@@ -46,8 +46,9 @@ function showNotes() {
         </div>
          `;
     });
-  } else{
-    elem.innerHTML= '<em style="color: grey">Nothing to show, Add some notes to show here</em>';
+  } else {
+    elem.innerHTML =
+      '<em style="color: grey">Nothing to show, Add some notes to show here</em>';
   }
 }
 
@@ -64,3 +65,27 @@ function delNote(n) {
   localStorage.setItem("notes", JSON.stringify(notesArr));
   showNotes();
 }
+
+// search button working
+let searchBtn = document.getElementById("searchBtn");
+let searchText = document.getElementById("searchText");
+
+searchText.addEventListener("input", function (e) {
+  //   getting notes from local storage
+  let storedNotes = localStorage.getItem("notes");
+  let notesArr = [];
+  if (storedNotes != null) {
+    notesArr = JSON.parse(storedNotes);
+  } else {
+    notesArr = [];
+  }
+
+  notesArr.forEach((note, index) => {
+    let noteCard = document.getElementById(`note-${index}`);
+    if (note.includes(e.target.value)) {
+      noteCard.style.display = "";
+    } else {
+      noteCard.style.display = "none";
+    }
+  });
+});
