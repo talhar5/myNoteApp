@@ -5,30 +5,29 @@ let addTitle = document.getElementById("addTitle");
 
 // add note button listener
 addBtn.addEventListener("click", function () {
-  textValue = addNoteText.value;
   titleValue = addTitle.value;
+  textValue = addNoteText.value;
+  timeValue = Date.parse(new Date());
 
   let storedNotes = localStorage.getItem("notes");
-  let storedTitles = localStorage.getItem("titles");
 
   let notesArr = [];
-  let titlesArr = [];
   if (storedNotes != null) {
     notesArr = JSON.parse(storedNotes);
-    titlesArr = JSON.parse(storedTitles);
   } else {
     notesArr = [];
-    titlesArr = [];
   }
 
   if (textValue != "") {
-    notesArr.unshift(textValue);
-    titlesArr.unshift(titleValue);
+    notesArr.unshift({
+      title: titleValue,
+      note: textValue,
+      timeStamp: timeValue,
+    });
   }
   addNoteText.value = "";
   addTitle.value = "";
   localStorage.setItem("notes", JSON.stringify(notesArr));
-  localStorage.setItem("titles", JSON.stringify(titlesArr));
   showNotes();
 });
 
@@ -38,27 +37,43 @@ function showNotes() {
   elem.innerHTML = "";
 
   let storedNotes = localStorage.getItem("notes");
-  let storedTitles = localStorage.getItem("titles");
 
   let notesArr = [];
-  let titlesArr = [];
   if (storedNotes != null) {
     notesArr = JSON.parse(storedNotes);
-    titlesArr = JSON.parse(storedTitles);
   } else {
     notesArr = [];
-    titlesArr = [];
   }
 
   if (notesArr.length > 0) {
     notesArr.forEach((note, index) => {
-      let showTitle = titlesArr[index] != "" ? titlesArr[index] : "no title";
+      let showTitle = note.title != "" ? note.title : "no title";
+      let d = new Date(note.timeStamp);
+      const months = [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December",
+      ];
+      let hours = d.getHours()>12?d.getHours()-12:d.getHours();
+      let timeStamp = `${hours<10?'0'+hours: hours}:${d.getMinutes()<10?'0'+d.getMinutes():d.getMinutes()} ${d.getHours()>12?'pm':'am'}, ${months[
+        d.getMonth()
+      ].slice(0, 3)} ${d.getDate()} ${d.getFullYear()}`;
       elem.innerHTML += `
         <div id="note-${index}" class="card  m-2" style="width: 18rem;">
             <div class="card-body">
                 <h5 class="card-title">${showTitle}</h5>
-                <p class="card-text">${note}</p>
+                <p class="card-text">${note.note}</p>
                 <button onclick="delNote(${index})" class="btn btn-primary">Delete</button>
+                <div class="cardDate ms-4 d-inline text-muted "><em>${timeStamp}</em></div>
             </div>
         </div>
          `;
@@ -72,22 +87,16 @@ function showNotes() {
 // delete button event listener
 function delNote(n) {
   let storedNotes = localStorage.getItem("notes");
-  let storedTitles = localStorage.getItem("titles");
 
   let notesArr = [];
-  let titlesArr = [];
   if (storedNotes != null) {
     notesArr = JSON.parse(storedNotes);
-    titlesArr = JSON.parse(storedTitles);
   } else {
     notesArr = [];
-    titlesArr = [];
   }
 
   notesArr.splice(n, 1);
-  titlesArr.splice(n, 1);
   localStorage.setItem("notes", JSON.stringify(notesArr));
-  localStorage.setItem("titles", JSON.stringify(titlesArr));
   showNotes();
 }
 
@@ -98,25 +107,21 @@ let searchText = document.getElementById("searchText");
 searchText.addEventListener("input", function (e) {
   //   getting notes from local storage
   let storedNotes = localStorage.getItem("notes");
-  let storedTitles = localStorage.getItem("titles");
 
   let notesArr = [];
-  let titlesArr = [];
   if (storedNotes != null) {
     notesArr = JSON.parse(storedNotes);
-    titlesArr = JSON.parse(storedTitles);
   } else {
     notesArr = [];
-    titlesArr = [];
   }
 
   notesArr.forEach((note, index) => {
-    let title = titlesArr[index];
+    let title = note.title;
 
     let noteCard = document.getElementById(`note-${index}`);
 
-    let match1 = note.toLowerCase().includes(e.target.value.toLowerCase());
-    let match2 = title.toLowerCase().includes(e.target.value.toLowerCase());
+    let match1 = note.note.toLowerCase().includes(e.target.value.toLowerCase());
+    let match2 = note.title.toLowerCase().includes(e.target.value.toLowerCase());
     if (match1 || match2) {
       noteCard.style.display = "";
     } else {
