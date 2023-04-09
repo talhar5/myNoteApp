@@ -2,12 +2,14 @@ showNotes();
 let addBtn = document.getElementById("addBtn");
 let addNoteText = document.getElementById("addNoteText");
 let addTitle = document.getElementById("addTitle");
+let addImp = document.getElementById("addImp");
 
 // add note button listener
 addBtn.addEventListener("click", function () {
-  titleValue = addTitle.value;
-  textValue = addNoteText.value;
-  timeValue = Date.parse(new Date());
+  let titleValue = addTitle.value;
+  let textValue = addNoteText.value;
+  let impValue = addImp.checked;
+  let timeValue = Date.parse(new Date());
 
   let storedNotes = localStorage.getItem("notes");
 
@@ -23,6 +25,7 @@ addBtn.addEventListener("click", function () {
       title: titleValue,
       note: textValue,
       timeStamp: timeValue,
+      important: impValue
     });
   }
   addNoteText.value = "";
@@ -67,8 +70,10 @@ function showNotes() {
       let timeStamp = `${hours<10?'0'+hours: hours}:${d.getMinutes()<10?'0'+d.getMinutes():d.getMinutes()} ${d.getHours()>12?'pm':'am'}, ${months[
         d.getMonth()
       ].slice(0, 3)} ${d.getDate()} ${d.getFullYear()}`;
+
+
       elem.innerHTML += `
-        <div id="note-${index}" class="card  m-2" style="width: 18rem;">
+        <div id="note-${index}" class="card ${note.important==true?'bg-danger bg-opacity-50':''} m-2" style="width: 18rem;">
             <div class="card-body">
                 <h5 class="card-title">${showTitle}</h5>
                 <p class="card-text">${note.note}</p>
